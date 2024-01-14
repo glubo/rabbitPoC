@@ -1,0 +1,36 @@
+micronaut:
+  application:
+    name: rabbitpoc
+  security:
+#    authentication: cookie
+    enabled: false # TODO: :D
+    oauth2:
+      clients:
+        default:
+          client-secret: ${OAUTH_CLIENT_SECRET:YYY}
+          client-id: ${OAUTH_CLIENT_ID:XXX}
+    intercept-url-map:
+      - pattern: /static/*
+        http-method: GET
+        access:
+          - isAnonymous()
+      - pattern: /health
+        access:
+          - isAnonymous()
+      - pattern: /*
+        access:
+          - isAuthenticated()
+  views:
+    jte:
+      dynamic: false
+      binary-static-content: true
+  router:
+    static-resources:
+      favicon:
+        enabled: true
+        mapping: "/**"
+        paths: classpath:static
+      default:
+        enabled: true
+        mapping: "/static/**"
+        paths: classpath:static

@@ -1,0 +1,18 @@
+@import cz.glubo.Page
+@import cz.glubo.Site
+
+@param loggedIn: Boolean
+@param username: String
+
+
+@template.layout(
+    page = Site.page("Home"),
+    content = @`
+        @if (loggedIn)
+            <h1>Welcome username: <span>${username}</span></h1>
+        @else
+            <h1>You are not logged in</h1>
+        @endif
+    `,
+    username = username,
+)

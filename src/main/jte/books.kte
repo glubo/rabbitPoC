@@ -1,0 +1,22 @@
+@import cz.glubo.Page
+@import cz.glubo.Book
+@import cz.glubo.Site
+
+@param loggedIn: Boolean
+@param username: String
+@param books: List<Book>
+
+
+@template.layout(
+    page = Site.page("Books"),
+    content = @`
+        <h1>Books</h1>
+        <ul>
+        @for (book in books)
+            <li>${book.name}</li>
+        @endfor
+        </ul>
+        <button hx-post="/books/random" hx-target="body">Add random book</button>
+    `,
+    username = username,
+)
