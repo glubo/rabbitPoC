@@ -32,7 +32,7 @@ class BookRepository {
         )
 }
 
-@Secured(SecurityRule.IS_AUTHENTICATED)
+@Secured(SecurityRule.IS_ANONYMOUS)
 @Controller
 class BookController(
     private val bookRepository: BookRepository,

@@ -17,10 +17,18 @@ class SecurityViewModelProcessor internal constructor() : ViewModelProcessor<Map
         modelAndView.setModel(
             originalModel.plus(
                 mapOf<String?, Any?>(
-                    "username" to (principal?.name ?: "Anonymous"),
-                    "loggedIn" to (principal != null),
+                    "userContext" to
+                        UserContext(
+                            username = principal?.name ?: "Anonymous",
+                            loggedIn = principal != null,
+                        ),
                 ),
             ),
         )
     }
+
+    data class UserContext(
+        val username: String,
+        val loggedIn: Boolean,
+    )
 }

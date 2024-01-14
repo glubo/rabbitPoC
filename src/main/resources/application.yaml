@@ -2,24 +2,32 @@ micronaut:
   application:
     name: rabbitpoc
   security:
-#    authentication: cookie
-    enabled: false # TODO: :D
+    authentication: idtoken
+#    enabled: false # TODO: :D
     oauth2:
       clients:
         default:
           client-secret: ${OAUTH_CLIENT_SECRET:YYY}
-          client-id: ${OAUTH_CLIENT_ID:XXX}
+          client-id: ${OAUTH_CLIENT_ID:postman}
+          openid:
+            issuer: "${OAUTH_ISSUER:https://keyacloak.glubo.cz/realms/glubot}"
+      enabled: true
     intercept-url-map:
       - pattern: /static/*
         http-method: GET
         access:
           - isAnonymous()
+      - pattern: /oauth/*
+        access:
+          - isAnonymous()
       - pattern: /health
         access:
           - isAnonymous()
-      - pattern: /*
-        access:
-          - isAuthenticated()
+    endpoints:
+      login:
+        enabled: true
+      logout:
+        get-allowed: true
   views:
     jte:
       dynamic: false
@@ -34,3 +42,7 @@ micronaut:
         enabled: true
         mapping: "/static/**"
         paths: classpath:static
+logger:
+  levels:
+    ROOT: INFO
+#    io.micronaut.security: DEBUG
