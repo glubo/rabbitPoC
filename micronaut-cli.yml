@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: cz.glubo
+testFramework: kotest
+sourceLanguage: kotlin
+buildTool: gradle_kotlin
+features: [ app-name, gradle, http-client, http-client-test, kotest, kotlin, kotlin-application, kotlin-extension-functions, ksp, logback, micronaut-aot, micronaut-build, micronaut-http-validation, netty-server, properties, readme, security-annotations, security-oauth2, serialization-jackson, shade, views-jte ]
