@@ -19,6 +19,11 @@ object Site {
                 title = "Books",
                 uri = "/books",
             ),
+            Page(
+                description = "This would be Books description",
+                title = "Dead Letter Queues",
+                uri = "/dlqs",
+            ),
         )
     val pagesByTitle = pages.associateBy { it.title }
 

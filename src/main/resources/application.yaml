@@ -10,7 +10,7 @@ micronaut:
           client-secret: ${OAUTH_CLIENT_SECRET:YYY}
           client-id: ${OAUTH_CLIENT_ID:postman}
           openid:
-            issuer: "${OAUTH_ISSUER:https://keyacloak.glubo.cz/realms/glubot}"
+            issuer: ${OAUTH_ISSUER:`https://keycloak.glubo.cz/realms/glubot`}
       enabled: true
     intercept-url-map:
       - pattern: /static/*

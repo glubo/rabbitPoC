@@ -1,0 +1,21 @@
+@import cz.glubo.Page
+@import cz.glubo.DeadQueue
+@import cz.glubo.Site
+@import cz.glubo.SecurityViewModelProcessor.UserContext
+
+@param userContext: UserContext
+@param dlqs: List<DeadQueue>
+
+
+@template.layout(
+page = Site.page("Dead Letter Queues"),
+content = @`
+    <h1>Dead Letter Queues</h1>
+    <ul>
+        @for (dlq in dlqs)
+            <li>${dlq.queue}</li>
+        @endfor
+    </ul>
+`,
+userContext =  userContext,
+)
