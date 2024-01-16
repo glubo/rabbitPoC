@@ -3,6 +3,7 @@ package cz.glubo
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.security.annotation.Secured
+import io.micronaut.security.authentication.ServerAuthentication
 import io.micronaut.security.rules.SecurityRule
 import io.micronaut.views.ModelAndView
 import jakarta.inject.Singleton
@@ -33,6 +34,7 @@ class DeadQueuesController(
 
 private fun Principal.getRoles(): List<String> =
     when (this) {
+        is ServerAuthentication -> roles.toList()
         else -> emptyList()
     }
 
