@@ -1,9 +1,14 @@
 package cz.glubo
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+import io.micronaut.http.MediaType
+import io.micronaut.http.annotation.Consumes
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.PathVariable
+import io.micronaut.http.annotation.Post
+import io.micronaut.scheduling.annotation.Scheduled
 import io.micronaut.security.annotation.Secured
-import io.micronaut.security.authentication.ServerAuthentication
 import io.micronaut.security.rules.SecurityRule
 import io.micronaut.views.ModelAndView
 import jakarta.inject.Singleton
@@ -14,34 +19,48 @@ data class DeadQueue(
     val vhost: String,
     val dlq: String,
     val queue: String,
-    val length: Int?,
-)
+    val length: Int,
+) {
+    val id: String
+        get() = "$vhost:$queue"
+}
 
-@Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller
 class DeadQueuesController(
     private val deadQueuesService: DeadQueuesService,
 ) {
+    @Secured(SecurityRule.IS_AUTHENTICATED)
     @Get("/dlqs")
     fun dlqs(principal: Principal) =
         ModelAndView(
             "dlqs",
             mapOf<String, Any>(
-                "dlqs" to deadQueuesService.getDlqs(principal.getRoles()),
+                "dlqs" to deadQueuesService.getDlqs(),
             ),
         )
-}
 
-private fun Principal.getRoles(): List<String> =
-    when (this) {
-        is ServerAuthentication -> roles.toList()
-        else -> emptyList()
+    @Secured(SecurityRule.IS_AUTHENTICATED)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Post("/dlqs/{deadQueueId}/bucket")
+    fun bucket(
+        principal: Principal,
+        @PathVariable deadQueueId: String,
+    ): ModelAndView<Map<String, Any>> {
+        deadQueuesService.bucket(deadQueueId)
+        return ModelAndView(
+            "dlqs",
+            mapOf<String, Any>(
+                "dlqs" to deadQueuesService.getDlqs(),
+            ),
+        )
     }
+}
 
 @Singleton
 class DeadQueuesService {
-    fun getDlqs(roles: List<String>) =
-        listOf(
+    val logger = KotlinLogging.logger { }
+    private val dlqs =
+        mutableListOf(
             DeadQueue(
                 vhost = "payments",
                 dlq = "nejake_fronta_todle_je_dlouhy.dlq",
@@ -79,4 +98,30 @@ class DeadQueuesService {
                 length = Random.nextInt(1, 100),
             ),
         )
+
+    fun getDlqs(): List<DeadQueue> {
+        logger.info { "Requested dlq list" }
+        return dlqs.sortedBy { it.id }
+    }
+
+    fun bucket(deadQueueId: String) {
+        logger.info { "Requested dlq bucket of $deadQueueId" }
+        val dlq =
+            dlqs.firstOrNull { it.id == deadQueueId }
+                ?: throw DlqNotFoundException(deadQueueId)
+
+        dlqs.remove(dlq)
+        dlqs.add(dlq.copy(length = 0))
+
+        logger.debug { "Dlq $deadQueueId bucketted, resulting dlqs: $dlqs" }
+    }
+
+    @Scheduled(fixedDelay = "1s")
+    fun addDead() {
+        val dlq = dlqs.random()
+        dlqs.remove(dlq)
+        dlqs.add(dlq.copy(length = dlq.length + 1))
+    }
+
+    class DlqNotFoundException(deadQueueId: String) : RuntimeException("Dead Letter Queue $deadQueueId not found")
 }

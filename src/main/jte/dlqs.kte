@@ -11,11 +11,27 @@
 page = Site.page("Dead Letter Queues"),
 content = @`
     <h1>Dead Letter Queues</h1>
-    <ul>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Dlq</th>
+            <th>Original Queue</th>
+            <th>Length</th>
+            <th>Bucket</th>
+        </tr>
+        </thead>
+        <tbody>
         @for (dlq in dlqs)
-            <li>${dlq.queue}</li>
+            <tr>
+                <td>${dlq.dlq}</td>
+                <td>${dlq.queue}</td>
+                <td>${dlq.length}</td>
+                <td><button hx-post="/dlqs/${dlq.id}/bucket" hx-target="body">Bucket</button></td>
+            </tr>
         @endfor
-    </ul>
+        </tbody>
+    </table>
+    <button hx-post="/dlqs/bucket" hx-target="body">Bucket</button>
 `,
 userContext =  userContext,
 )

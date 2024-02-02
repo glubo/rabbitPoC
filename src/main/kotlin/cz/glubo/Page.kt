@@ -16,11 +16,6 @@ object Site {
             ),
             Page(
                 description = "This would be Books description",
-                title = "Books",
-                uri = "/books",
-            ),
-            Page(
-                description = "This would be Books description",
                 title = "Dead Letter Queues",
                 uri = "/dlqs",
             ),

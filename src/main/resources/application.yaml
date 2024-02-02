@@ -1,9 +1,10 @@
 micronaut:
+  banner:
+    enabled: false
   application:
     name: rabbitpoc
   security:
     authentication: idtoken
-#    enabled: false # TODO: :D
     oauth2:
       clients:
         default:

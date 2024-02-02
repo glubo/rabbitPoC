@@ -34,6 +34,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("ch.qos.logback.contrib:logback-json-classic:0.1.5")
+    runtimeOnly("ch.qos.logback.contrib:logback-jackson:0.1.5")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     aotPlugins(platform("io.micronaut.platform:micronaut-platform:4.2.3"))
     aotPlugins("io.micronaut.security:micronaut-security-aot")
@@ -41,6 +43,7 @@ dependencies {
     implementation("io.github.serpro69:kotlin-faker:1.15.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.3")
+    implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 }
 
 application {
